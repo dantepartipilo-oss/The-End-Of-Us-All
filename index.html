@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infection AU Journal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap');
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f2eadf;
+      font-family: 'Reenie Beanie', cursive;
+      color: #3b2f2f;
+      display: flex;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      width: 280px;
+      background: #e6dccf;
+      border-right: 4px solid #c7b8a3;
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    #sidebar h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
+      font-family: 'Reenie Beanie', cursive;
+    }
+
+    #sidebar ul {
+      padding-left: 10px;
+      list-style: none;
+    }
+
+    #sidebar li {
+      margin: 10px 0;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      padding-left: 6px;
+      transition: 0.2s;
+    }
+
+    #sidebar li:hover {
+      border-left: 3px solid #8b6f47;
+      color: #8b6f47;
+    }
+
+    /* Main journal area */
+    #journal {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      padding: 40px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      background-image: url('https://i.imgur.com/nYOY9qA.png');
+      background-size: cover;
+      background-repeat: repeat;
+    }
+
+    .page {
+      width: 45%;
+      height: 90%;
+      background: rgba(255, 248, 235, 0.95);
+      border: 10px solid transparent;
+      border-image: url('https://i.imgur.com/oG2Q2xK.png') 30 round;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      padding: 30px;
+      font-family: 'Reenie Beanie', cursive;
+      line-height: 1.6;
+      font-size: 20px;
+      overflow-y: auto;
+    }
+
+    .entry-container { perspective: 1500px; }
+
+.entry {
+      transform-origin: left center;
+      transition: transform 0.6s ease;
+
+      background: rgba(255, 248, 235, 0.9);
+      padding: 40px;
+      border: 10px solid transparent;
+      border-image: url('https://i.imgur.com/oG2Q2xK.png') 30 round;
+      box-shadow: 0 0 15px rgba(0,0,0,0.25);
+      max-width: 800px;
+      margin: auto;
+      background: rgba(255, 248, 235, 0.9);
+      padding: 30px;
+      border: 2px solid #d4c2a8;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      font-family: 'Reenie Beanie', cursive;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      font-size: 18px;
+    }
+
+    .entry h2 {
+      margin-top: 0;
+      font-size: 28px;
+      border-bottom: 2px solid #c7b8a3;
+      padding-bottom: 10px;
+    }
+  .page-corner {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      bottom: 50px;
+      right: 50px;
+      background: linear-gradient(135deg, transparent 50%, #fff8eb 50%);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .page-corner:hover {
+      transform: scale(1.2) rotate(-20deg);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="sidebar">
+    <h1>Journal Entries</h1>
+    <ul>
+  <!-- Entries removed. Ready for new ones. -->
+</ul>
+  </div>
+
+  <div id="journal">
+    <div class="book">
+      <div class="page left-page" id="leftPage"></div>
+      <div class="page right-page" id="entry"></div>
+      <div class="page-corner" id="corner"></div>
+    </div>
+  </div>
+
+  <audio id="flipSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7f02e52356.mp3?filename=page-flip-110260.mp3"></audio>
+
+  <script>
+    const entries = {
+  
+};
+
+    function loadEntry(id) {
+      currentEntry = id;
+      const saved = localStorage.getItem("journal_" + id) || entries[id];
+
+      const right = document.getElementById("entry");
+      const left = document.getElementById("leftPage");
+      const flip = document.getElementById("flipSound");
+
+      right.style.transform = 'rotateY(-90deg)';
+      left.style.transform = 'rotateY(-90deg)';
+      flip.play();
+
+      setTimeout(() => {
+        left.textContent = "Previous Notes / Scribbles...";
+        right.textContent = "";
+        right.style.transform = 'rotateY(0deg)';
+        left.style.transform = 'rotateY(0deg)';
+      }, 300);
+
+      editMode = false;
+    }(id) {
+      document.getElementById("entry").textContent = entries[id];
+    }
+
+    // Load first entry by default
+    loadEntry('entry1');
+      // Editable mode
+    let editMode = false;
+
+    function toggleEdit() {
+      editMode = !editMode;
+      const entryBox = document.getElementById("entry");
+
+      if (editMode) {
+        const current = entryBox.textContent;
+        entryBox.innerHTML = `<textarea id='editor' style='width:100%;height:500px;font-family:Courier New;font-size:18px;background:#fff7e3;border:2px solid #c7b8a3;padding:10px;'>${current}</textarea>`;
+      } else {
+        const updated = document.getElementById("editor").value;
+        entryBox.textContent = updated;
+        // Save to local storage
+        localStorage.setItem("journal_" + currentEntry, updated);
+      }
+    }
+
+    let currentEntry = 'entry1';
+
+    function loadEntry(id) {
+      currentEntry = id;
+      let saved = localStorage.getItem("journal_" + id);
+      const entryBox = document.getElementById("entry");
+      entryBox.style.transform = 'rotateY(-90deg)';
+      setTimeout(() => {
+        entryBox.textContent = saved || entries[id];
+        entryBox.style.transform = 'rotateY(0deg)';
+      }, 300);
+      editMode = false;
+    }
+
+    // Add Edit button
+    const btn = document.createElement('button');
+    btn.textContent = 'Toggle Edit Mode';
+    btn.style = 'position:fixed; bottom:20px; right:20px; padding:10px 20px; background:#8b6f47; color:white; border:none; cursor:pointer; font-size:16px;';
+    btn.onclick = toggleEdit;
+    document.body.appendChild(btn);
+
+  </script>
+
+</body>
+</html>
